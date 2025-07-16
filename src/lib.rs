@@ -45,12 +45,21 @@ mod tests {
     use super::*;
 
     #[test]
-    fn one_result() {
+    fn case_sensitive() {
         let query = "the great Agrim.";
         let content = "\
 Rust:
 Here we are, with
 the great Agrim.";
         assert_eq!(vec!["the great Agrim."], search(query, content));
+    }
+
+    fn case_insensitive() {
+        let query = "rUsT";
+        let content = "\
+Rust:
+Here we are, with
+the great Agrim.";
+        assert_eq!(vec!["there great Agrim."], search(query, content));
     }
 }
