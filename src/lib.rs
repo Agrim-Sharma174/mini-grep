@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, result};
 use std::error::Error;
 
 pub struct Config {
@@ -40,6 +40,19 @@ pub fn search<'a>(query: &str, content: &'a str) -> Vec<&'a str> {
     results
 }
 
+pub fn search_case_insensitive<'a>(query: &str, content:&'a str) -> Vec<&'a str> {
+    let query = query.to_lowercase();
+    let mut results = Vec::new();
+
+    for line in content.lines() {
+        if line.to_lowercase().contains(&query) {
+            results.push(line);
+        }
+    }
+
+    results
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -54,12 +67,13 @@ the great Agrim.";
         assert_eq!(vec!["the great Agrim."], search(query, content));
     }
 
+    #[test]
     fn case_insensitive() {
-        let query = "rUsT";
+        let query = "the Great Agrim.";
         let content = "\
 Rust:
 Here we are, with
 the great Agrim.";
-        assert_eq!(vec!["there great Agrim."], search(query, content));
+        assert_eq!(vec!["the great Agrim."], search_case_insensitive(query, content));
     }
 }
